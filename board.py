@@ -1,3 +1,5 @@
+from worker import Worker
+
 class Board:
     # translations from cardinal directions to array 
     # index offsets in our 5x + y coordinate system
@@ -85,7 +87,7 @@ class Board:
         else:
             return True
     
-    def check_move(self, worker: str, direction: str):
+    def check_move(self, worker: str, direction: str, update: bool=True):
         """ Check validity of a proposed move direction 
             and execute it if valid. Returns true on
             success and updates the board, returns false
@@ -98,14 +100,16 @@ class Board:
         new_position = offset + current_position
 
         
-        if self._valid_move_or_build(new_position, current_position, direction, False):
-            self._workers[worker] = new_position
-            self._board = self._draw()
+        if self._valid_move_or_build(new_position, current_position, direction):
+            # Conditionally update position of worker
+            if update:
+                self._workers[worker] = new_position
+                self._board = self._draw()
             return True
         else:
             return False
         
-    def check_build(self, worker, direction: str):
+    def check_build(self, worker: str, direction: str, update: bool=True):
         #  Translate 2-d address into 1-d
         offset = Board.address_translations[direction]
 
@@ -113,10 +117,11 @@ class Board:
         current_position = self._workers[worker]
         build_position = offset + current_position
         # Check validity of move direction
-        if (self._valid_move_or_build(build_position, current_position, direction)):
-            # Update build_position level
-            self._levels[build_position] += 1
-            self._board = self._draw()
+        if (self._valid_move_or_build(build_position, current_position, direction, False)):
+            # Conditionally update build_position level
+            if update:
+                self._levels[build_position] += 1
+                self._board = self._draw()
             return True
         else:
             return False
