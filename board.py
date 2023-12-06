@@ -14,13 +14,14 @@ class Board:
             'nw': -6
         }
     
+    valid_directions = ["n", "ne", "e", "se", "s", "sw", "w", "nw"]
     # arrays containing the east and west directions for bound checking
     east_directions = ["e", "ne", "se"]
     west_directions = ["w", "nw", "sw"]
     def __init__(self, p11=16, p12=8, p21=6, p22=18):
         # Keep track of cell levels and worker locations
-        self._levels = [0 for i in range(0, 25)]
-        self._workers = {
+        self.levels = [0 for i in range(0, 25)]
+        self.worker_positions = {
             'A': p11,
             'B': p12,
             'Y': p21,
@@ -42,15 +43,15 @@ class Board:
                 # convert the index 
                 index = 5 * i + j
                 board += "|"
-                board += str(self._levels[index])
-                if index in self._workers.values():    
-                    if index == self._workers['A']:
+                board += str(self.levels[index])
+                if index in self.worker_positions.values():    
+                    if index == self.worker_positions['A']:
                         board += "A"
-                    elif index == self._workers['B']:
+                    elif index == self.worker_positions['B']:
                         board += "B"
-                    elif index == self._workers['Y']:
+                    elif index == self.worker_positions['Y']:
                         board += "Y"
-                    elif index == self._workers['Z']:
+                    elif index == self.worker_positions['Z']:
                         board += "Z"
                 else:
                     board += " "
@@ -76,13 +77,13 @@ class Board:
         elif new_position < 0 or new_position > 24:
             return False
         # can't make a move to/build on a position with a height more than 1 greater than the worker's current height
-        elif move and self._levels[new_position] > self._levels[current_position] + 1:
+        elif move and self.levels[new_position] > self.levels[current_position] + 1:
             return False
         # can't move to/build on a space with another worker on it
-        elif new_position in self._workers.values():
+        elif new_position in self.worker_positions.values():
             return False
         # can't move/build to a space with height of 4 (a dome)
-        elif self._levels[new_position] == 4:
+        elif self.levels[new_position] == 4:
             return False
         else:
             return True
@@ -96,14 +97,13 @@ class Board:
         offset = Board.address_translations[direction]
 
         # Translate worker to current location
-        current_position = self._workers[worker]
+        current_position = self.worker_positions[worker]
         new_position = offset + current_position
 
-        
         if self._valid_move_or_build(new_position, current_position, direction):
             # Conditionally update position of worker
             if update:
-                self._workers[worker] = new_position
+                self.worker_positions[worker] = new_position
                 self._board = self._draw()
             return True
         else:
@@ -114,13 +114,13 @@ class Board:
         offset = Board.address_translations[direction]
 
         # Translate worker to current location
-        current_position = self._workers[worker]
+        current_position = self.worker_positions[worker]
         build_position = offset + current_position
         # Check validity of move direction
         if (self._valid_move_or_build(build_position, current_position, direction, False)):
             # Conditionally update build_position level
             if update:
-                self._levels[build_position] += 1
+                self.levels[build_position] += 1
                 self._board = self._draw()
             return True
         else:
@@ -129,8 +129,8 @@ class Board:
     def check_winner(self):
         """ Check there's a winner after a turn
         i.e. worker is on level 3 """
-        worker_positions = self._workers.values()
+        worker_positions = self.worker_positions.values()
         for position in worker_positions:
-            if self._levels[position] == 3:
+            if self.levels[position] == 3:
                 return True
         return False

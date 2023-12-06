@@ -4,5 +4,6 @@ class Worker:
         self._name = name
         self.has_valid_moves = True
     
-    def get_name(self):
+    @property
+    def name(self):
         return self._name
