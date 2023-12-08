@@ -16,7 +16,6 @@ class PromptState:
             PromptState.next_state += 1
 
     def process_state(self, piece):
-        print(self._prompt)
         result = self._prompt()
         if self._check != None:
             self._check(piece, result)
@@ -101,6 +100,9 @@ class Manager:
         # self.game_over = False
         reset_state = self._state_stack.reset()
         self._update_state(reset_state)
+        for player in self._players:
+            for worker in player.workers:
+                worker.has_valid_moves = True
 
     def print_board(self):
         """ Print current state of the board on the terminal"""
