@@ -36,5 +36,6 @@ if __name__ == "__main__":
 
     arg3 = True if arg3 == "on" else False
     arg4 = True if arg4 == "on" else False
-    
+
     GameCLI(arg1, arg2, arg3, arg4).run()
+    

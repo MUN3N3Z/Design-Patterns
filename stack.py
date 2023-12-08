@@ -5,8 +5,9 @@ class StateObject:
         self.turn = turn
         self.current_player = current_player
         self.game_over = game_over_flag
-    
-    
+
+    def __repr__(self) -> str:
+        return "\n" + self.board._board
 
 class StateStack:
     def __init__(self):
@@ -32,3 +33,9 @@ class StateStack:
 
     def current(self):
         return self.states[-1]
+    
+    def reset(self):
+        while len(self.states) > 1:
+            self.undo()
+        print(self.states)
+        return self.current()

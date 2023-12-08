@@ -10,7 +10,7 @@ class Board:
             'se': 6, 
             's': 5, 
             'sw': 4, 
-            'w': -1, 
+            'w': -1,  
             'nw': -6
         }
     
@@ -18,16 +18,19 @@ class Board:
     # arrays containing the east and west directions for bound checking
     east_directions = ["e", "ne", "se"]
     west_directions = ["w", "nw", "sw"]
-    def __init__(self, p11=16, p12=8, p21=6, p22=18):
+    def __init__(self, p11=16, p12=8, p21=6, p22=18, levels=[0 for i in range(0, 25)], board=None):
         # Keep track of cell levels and worker locations
-        self.levels = [0 for i in range(0, 25)]
+        self.levels = levels[:]
         self.worker_positions = {
             'A': p11,
             'B': p12,
             'Y': p21,
             'Z': p22,
         }
-        self._board = self._draw()
+        if board == None:
+            self._board = self._draw()
+        else:
+            self._board = board
 
     def __repr__(self):
         return self._board
